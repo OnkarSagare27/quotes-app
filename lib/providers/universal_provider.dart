@@ -20,11 +20,11 @@ class UniversalProvider extends ChangeNotifier {
 
   UniversalProvider() {
     initialize();
-    _todaysQuote = QuoteModel(
-        quote:
-            'Everyone here has the sense that right now is one of those moments when we are influencing the future.',
-        author: 'Steve Jobs',
-        category: 'insp');
+    // _todaysQuote = QuoteModel(
+    //     quote:
+    //         'Everyone here has the sense that right now is one of those moments when we are influencing the future.',
+    //     author: 'Steve Jobs',
+    //     category: 'insp');
   }
 
   final List<String> _categories = [
@@ -52,8 +52,8 @@ class UniversalProvider extends ChangeNotifier {
         DateTime.now().difference(_lastFetchTime!) > const Duration(days: 1)) {
       await _fetchQuote();
     } else {
-      final quote = prefs.getString('quote');
-      notifyListeners();
+      final quote = prefs.getString('todaysQuote');
+
       if (quote != null) {
         _todaysQuote = QuoteModel.fromJson(jsonDecode(quote));
         notifyListeners();
@@ -70,7 +70,7 @@ class UniversalProvider extends ChangeNotifier {
       );
       _todaysQuote = QuoteModel.fromJson(jsonDecode(response.body)[0]);
       final prefs = await SharedPreferences.getInstance();
-      prefs.setString('todaysQuote', jsonEncode(response.body)[0]);
+      prefs.setString('todaysQuote', jsonEncode(_todaysQuote!.toJson()));
       prefs.setInt('lastFetchTime', DateTime.now().millisecondsSinceEpoch);
       notifyListeners();
     } catch (e) {
